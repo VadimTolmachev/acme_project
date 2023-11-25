@@ -1,12 +1,23 @@
 {% extends "base.html" %}
-
+{% load django_bootstrap5 %}
 {% block content %}
-  <form>
-    <table>
-      {{ form }}
-    </table>
-    <input type="submit" value="submit">
-  </form>
+<div class="card col-4">
+  <div class="card-header">
+    Калькулятор ожидания дня рождения
+  </div>
+  <div class="card-body">
+    <form>
+      {% bootstrap_form form %}
+      {% bootstrap_button button_type="submit" content="Отправить" %}
+      <!-- Старая версия кода>>
+      <table>
+        {{ form }}
+      </table>
+      <input type="submit" value="submit">
+      <-->
+    </form>
+  </div>
+</div>
   {% with data=request.GET %}
   <!-- Привет, мы тебя знаем! -->
     {% if form.is_valid %}

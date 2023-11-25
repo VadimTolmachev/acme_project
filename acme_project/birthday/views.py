@@ -14,12 +14,12 @@ def birthday1(request):
         # То просто создаём пустую форму.
         form = BirthdayForm()
     context = {'form': form}
-    
+
     # Если данные валидны...
     if form.is_valid():
         # ...то считаем, сколько дней осталось до дня рождения.
         birthday_countdown = calculate_birthday_countdown(
-                form.cleaned_data['birthday']
+            form.cleaned_data['birthday']
         )
         context.update({'birthday_countdown': birthday_countdown})
     return render(request, 'birthday/birthday.html', context)
