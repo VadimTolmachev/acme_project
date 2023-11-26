@@ -1,34 +1,45 @@
 {% extends "base.html" %}
 {% load django_bootstrap5 %}
 {% block content %}
-<div class="card col-4">
-  <div class="card-header">
-    Калькулятор ожидания дня рождения
-  </div>
-  <div class="card-body">
-    <form>
-      {% bootstrap_form form %}
-      {% bootstrap_button button_type="submit" content="Отправить" %}
-      <!-- Старая версия кода>>
-      <table>
-        {{ form }}
-      </table>
-      <input type="submit" value="submit">
-      <-->
-    </form>
-  </div>
-</div>
-  {% with data=request.GET %}
-  <!-- Привет, мы тебя знаем! -->
+  {% with data=form.instance %}  
+    <!-- Если в пути запроса содержится строка /edit/. -->
+    {% if '/edit/' in request.path %}
+      <!-- Вывести заголовок и номер записи. -->
+      <h1>Редактировать запись {{ data.pk }}</h1>
+    {% elif '/delete/' in request.path %}
+      <h1>Удалить запись {{ data.pk }}</h1>
+    {% else %}
+      <h1>Создать запись</h1>
+    {% endif %}
+    <div class="card col-4">
+      <div class="card-header">
+        Калькулятор ожидания дня рождения
+      </div>
+      <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          {% if not "/delete/" in request.path %}
+            {% bootstrap_form form %}
+            {% bootstrap_button button_type="submit" content="Отправить" %}
+          {% else %}
+            <p>{{ data.first_name }} {{ data.last_name }}</p>
+            <p>{{ data.birthday }}</p>
+            {% bootstrap_button button_type="submit" content="Удалить" %}
+          {% endif %}
+        </form>
+      </div>
+    </div>
     {% if form.is_valid %}
-      <h2>Привет, {{ data.first_name }} {{ data.last_name }}</h2>
+      ID новой записи в БД: {{ data.id }}
+      <hr>
+        <h2>Привет, {{ data.first_name }} {{ data.last_name }}</h2>
       {% if birthday_countdown == 0 %}
-      <!-- ...выводим поздравление: -->
-      С днём рождения!
-      <!-- Если до дня рождения не ноль дней... -->
+        <!-- ...выводим поздравление: -->
+        С днём рождения!
+        <!-- Если до дня рождения не ноль дней... -->
       {% else %}
-      <!-- ...сообщаем, сколько осталось ждать: -->
-      Осталось дней до дня рождения: {{ birthday_countdown }}!
+          <!-- ...сообщаем, сколько осталось ждать: -->
+        Осталось дней до дня рождения: {{ birthday_countdown }}!
       {% endif %}
     {% endif %}
   {% endwith %}
