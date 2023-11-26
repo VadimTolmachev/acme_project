@@ -1,10 +1,21 @@
 from django.shortcuts import get_object_or_404, redirect, render
 # Импортируем класс пагинатора.
 from django.core.paginator import Paginator
+from django.views.generic import ListView
 
 from .models import Birthday
 from .forms import BirthdayForm
 from .utils import calculate_birthday_countdown
+
+
+# Наследуем класс от встроенного ListView:
+class BirthdayListView(ListView):
+    # Указываем модель, с которой работает CBV...
+    model = Birthday
+    # ...сортировку, которая будет применена при выводе списка объектов:
+    ordering = 'id'
+    # ...и даже настройки пагинации:
+    paginate_by = 10
 
 
 def birthday(request, pk=None):
