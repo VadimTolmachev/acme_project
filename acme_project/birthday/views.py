@@ -1,7 +1,12 @@
+"""...acme_project/birthday/views.py."""
+
 from django.shortcuts import get_object_or_404, redirect, render
+
 # Импортируем класс пагинатора.
 from django.core.paginator import Paginator
-from django.views.generic import CreateView, ListView
+from django.views.generic import (
+    CreateView, DeleteView, DetailView, ListView, UpdateView
+)
 from django.urls import reverse_lazy
 
 from .models import Birthday
@@ -9,8 +14,85 @@ from .forms import BirthdayForm
 from .utils import calculate_birthday_countdown
 
 
-# Наследуем класс от встроенного ListView:
+class BirthdayMixin:
+    model = Birthday
+    success_url = reverse_lazy('birthday:list')
+
+
+class BirthdayFormMixin:
+    form_class = BirthdayForm
+    template_name = 'birthday/birthday.html'
+
+
+class BirthdayCreateView(BirthdayMixin, BirthdayFormMixin, CreateView):
+    pass
+
+
+class BirthdayUpdateView(BirthdayMixin, BirthdayFormMixin, UpdateView):
+    pass
+
+
+class BirthdayDeleteView(BirthdayMixin, DeleteView):
+    pass
+
+
+class BirthdayDetailView(DetailView):
+    model = Birthday
+    # template_name_suffix = '_detail'
+
+    def get_context_data(self, **kwargs):
+        # Получаем словарь контекста:
+        context = super().get_context_data(**kwargs)
+        # Добавляем в словарь новый ключ:
+        context['birthday_countdown'] = calculate_birthday_countdown(
+            # Дату рождения берём из объекта в словаре context:
+            self.object.birthday
+        )
+        # Возвращаем словарь контекста.
+        return context
+
+
+# class BirthdayDeleteView(DeleteView):
+    """Класс наследуемый от CBV класса DeleteView:."""
+
+#    model = Birthday
+#    success_url = reverse_lazy('birthday:list')
+
+# class BirthdayCreateView(BirthdayMixin, CreateView):
+    """Класс наследуемый от CBV класса CreateView.
+
+    Добавляем миксин первым по списку родительских классов
+    И здесь все атрибуты наследуются от BirthdayMixin.
+    """
+
+    # pass
+    # Указываем модель, с которой работает CBV...
+    # model = Birthday
+    # Указываем имя формы:
+    # form_class = BirthdayForm
+    # Этот класс сам может создать форму на основе модели!
+    # Нет необходимости отдельно создавать форму через ModelForm.
+    # Указываем поля, которые должны быть в форме:
+    # fields = '__all__' # Подключились через форму!!!
+    # Явным образом указываем шаблон:
+    # template_name = 'birthday/birthday.html'
+    # Указываем namespace:name страницы, куда будет перенаправлен
+    # пользователь после создания объекта:
+    # success_url = reverse_lazy('birthday:create')
+
+
+# class BirthdayUpdateView(BirthdayMixin, UpdateView):
+    """Класс наследуемый от CBV класса UpdateView."""
+
+    # model = Birthday
+    # form_class = BirthdayForm
+    # template_name = 'birthday/birthday.html'
+    # success_url = reverse_lazy('birthday:create')
+
+
 class BirthdayListView(ListView):
+    """Класс наследуемый от CBV класса ListView:."""
+
     # Указываем модель, с которой работает CBV...
     model = Birthday
     # ...сортировку, которая будет применена при выводе списка объектов:
@@ -19,30 +101,13 @@ class BirthdayListView(ListView):
     paginate_by = 10
 
 
-class BirthdayCreateView(CreateView):
-    # Указываем модель, с которой работает CBV...
-    model = Birthday
-    # Указываем имя формы:
-    form_class = BirthdayForm
-    # Этот класс сам может создать форму на основе модели!
-    # Нет необходимости отдельно создавать форму через ModelForm.
-    # Указываем поля, которые должны быть в форме:
-    # fields = '__all__' # Подключились через форму!!!
-    # Явным образом указываем шаблон:
-    template_name = 'birthday/birthday.html'
-    # Указываем namespace:name страницы, куда будет перенаправлен пользователь
-    # после создания объекта:
-    success_url = reverse_lazy('birthday:list')
-
-
 def birthday(request, pk=None):
-    '''
-    Финкция для сохранения и редоктирования закиси в БД.
+    """Финкция для сохранения/редоктирования закиси в БД.
 
     Если присутствуетключ ключ - pk(не обязательный)
     функция используется для редактирования,
     иначе для добавления записи в БД.
-    '''
+    """
     if pk is not None:
         instance = get_object_or_404(Birthday, pk=pk)
     else:
@@ -69,6 +134,7 @@ def birthday(request, pk=None):
 
 
 def birthday_list(request):
+    """Функция списка всех записей."""
     # Получаем все объекты модели Birthday из БД.
     birthdays = Birthday.objects.all().order_by('id')
     # Создаём объект пагинатора с количеством 10 записей на страницу.
@@ -88,6 +154,7 @@ def birthday_list(request):
 
 
 def delete_birthday(request, pk):
+    """Функция удаления записи по ключу pk(id)."""
     # Получаем объект модели или выбрасываем 404 ошибку.
     instance = get_object_or_404(Birthday, pk=pk)
     # В форму передаём только объект модели;

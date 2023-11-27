@@ -17,6 +17,7 @@
       <div class="col-10"> 
         <div> <!-- Текст обернём в отдельный вложенный div -->
         {{ birthday.first_name }} {{ birthday.last_name }} - {{ birthday.birthday }}
+        <a href="{% url 'birthday:detail' birthday.id %}">Сколько до дня рождения?</a>
         </div>
         <div>
           <a href="{% url 'birthday:edit' birthday.id %}">Изменить запись</a> |

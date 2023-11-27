@@ -1,4 +1,4 @@
-# birthday/utils.py 
+# birthday/utils.py
 # Импортируем модуль для работы с датами.
 from datetime import date
 

@@ -14,15 +14,22 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='birthday',
             name='image',
-            field=models.ImageField(blank=True, upload_to='birthdays_images', verbose_name='Фото'),
+            field=models.ImageField(
+                blank=True,
+                upload_to='birthdays_images',
+                verbose_name='Фото'),
         ),
         migrations.AlterField(
             model_name='birthday',
             name='birthday',
-            field=models.DateField(validators=[birthday.validators.real_age], verbose_name='Дата рождения'),
+            field=models.DateField(
+                validators=[birthday.validators.real_age],
+                verbose_name='Дата рождения'),
         ),
         migrations.AddConstraint(
             model_name='birthday',
-            constraint=models.UniqueConstraint(fields=('first_name', 'last_name', 'birthday'), name='Unique person constraint'),
+            constraint=models.UniqueConstraint(
+                fields=('first_name', 'last_name', 'birthday'),
+                name='Unique person constraint'),
         ),
     ]
