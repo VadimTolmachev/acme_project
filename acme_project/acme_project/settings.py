@@ -1,3 +1,4 @@
+"""...acme_project/settings.py."""
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -9,6 +10,16 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# Подключаем бэкенд filebased.EmailBackend:
+# EMAIL_BACKEND = 'django.core.mail.backends.<тип бэкенда>.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+# Указываем директорию, в которую будут сохраняться файлы писем:
+EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
+
+LOGIN_REDIRECT_URL = 'pages:homepage'
+
+LOGIN_URL = 'login'
+
 INSTALLED_APPS = [
     'django_bootstrap5',
     'django.contrib.admin',
@@ -19,6 +30,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'birthday.apps.BirthdayConfig',
     'pages.apps.PagesConfig',
+    'users.apps.UsersConfig',
     'django_cleanup.apps.CleanupConfig',
 ]
 
