@@ -19,6 +19,33 @@
         {{ birthday.first_name }} {{ birthday.last_name }} - {{ birthday.birthday }}
         <a href="{% url 'birthday:detail' birthday.id %}">Сколько до дня рождения?</a>
         </div>
+        <!-- Начало нового блока кода -->
+                <div>
+                  <!-- Тег spaceless убирает из строки лишние пробелы 
+                    и переводы строк -->
+                  {% spaceless %}
+                    <!-- Цикл по тегам записи -->
+                    {% for tag in birthday.tags.all %}
+                      <!-- Если работаем с первым элементом цикла... -->
+                      {% if forloop.first %}
+                        <!-- ...выводим название тега с заглавной буквы -->
+                        <span>{{ tag.tag|title }}</span>
+                      {% else %}
+                        <!-- Если элемент не первый — пишем тег с маленькой буквы -->
+                        <span>{{ tag.tag|lower }}</span>
+                      {% endif %}
+                      <!-- Если обрабатываем не последний элемент цикла... -->
+                      {% if not forloop.last %}
+                        <!-- ...после него ставим запятую с пробелом -->
+                        <span>, </span>
+                      {% else %}
+                        <!-- После последнего элемента выводим username пользователя -->
+                        пользователя {{ birthday.author.username }}
+                      {% endif %}
+                    {% endfor %}
+                  {% endspaceless %}
+                </div>
+        <!-- Конец нового блока кода -->
         {% if birthday.author == user %}
         <div>
           <a href="{% url 'birthday:edit' birthday.id %}">Изменить запись</a> |

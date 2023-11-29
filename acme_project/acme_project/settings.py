@@ -28,7 +28,15 @@ CSRF_FAILURE_VIEW = 'core.views.csrf_failure'
 
 LOGIN_URL = 'login'
 
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
+
 INSTALLED_APPS = [
+    'pages.apps.PagesConfig',
+    'users.apps.UsersConfig',
+    'core.apps.CoreConfig',
+    'birthday.apps.BirthdayConfig',
     'django_bootstrap5',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -36,10 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'birthday.apps.BirthdayConfig',
-    'pages.apps.PagesConfig',
-    'users.apps.UsersConfig',
-    'core.apps.CoreConfig',
+    'debug_toolbar',
     'django_cleanup.apps.CleanupConfig',
 ]
 
@@ -51,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'acme_project.urls'
