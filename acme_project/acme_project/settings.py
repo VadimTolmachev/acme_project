@@ -8,7 +8,13 @@ SECRET_KEY = 'django-insecure-m&$lzdzkutvrbr5vt=jpm)'
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    # Когда проект будет опубликован и станет доступен для пользователей,
+    # в этот список нужно будет добавить и адреса домена, где он будет
+    # размещён, например 'acme.not' и 'www.acme.not'
+]
 
 # Подключаем бэкенд filebased.EmailBackend:
 # EMAIL_BACKEND = 'django.core.mail.backends.<тип бэкенда>.EmailBackend'
@@ -17,6 +23,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
 
 LOGIN_REDIRECT_URL = 'pages:homepage'
+
+CSRF_FAILURE_VIEW = 'core.views.csrf_failure'
 
 LOGIN_URL = 'login'
 
@@ -31,6 +39,7 @@ INSTALLED_APPS = [
     'birthday.apps.BirthdayConfig',
     'pages.apps.PagesConfig',
     'users.apps.UsersConfig',
+    'core.apps.CoreConfig',
     'django_cleanup.apps.CleanupConfig',
 ]
 

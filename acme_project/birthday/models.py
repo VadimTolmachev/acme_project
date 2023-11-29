@@ -1,9 +1,13 @@
+"""...acme_project/brithday/models.py."""
+from django.contrib.auth import get_user_model
 # Подключаем базовую модель
 from django.db import models
 from django.urls import reverse
 
 # Импортируется функция-валидатор.
 from .validators import real_age
+
+User = get_user_model()
 
 
 class Birthday(models.Model):
@@ -22,6 +26,9 @@ class Birthday(models.Model):
         validators=(real_age,)
     )
     image = models.ImageField('Фото', upload_to='birthdays_images', blank=True)
+    author = models.ForeignKey(
+        User, verbose_name='Автор записи', on_delete=models.CASCADE, null=True
+    )
 
     class Meta:
         constraints = (
@@ -32,5 +39,5 @@ class Birthday(models.Model):
         )
 
     def get_absolute_url(self):
-        #С помощью функции reverse() возвращаем URL объекта.
+        # С помощью функции reverse() возвращаем URL объекта.
         return reverse('birthday:detail', kwargs={'pk': self.pk})

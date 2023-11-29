@@ -109,6 +109,9 @@ def birthday(request, pk=None):
     иначе для добавления записи в БД.
     """
     if pk is not None:
+        # При поиске объекта дополнительно указываем текущего пользователя.
+        # instance = get_object_or_404(Birthday, pk=pk, author=request.user)
+
         instance = get_object_or_404(Birthday, pk=pk)
     else:
         instance = None
@@ -122,7 +125,12 @@ def birthday(request, pk=None):
     context = {'form': form}
     # Если форма валидна...
     if form.is_valid():
-        form.save()
+        # Форма открывается без сохранения
+        instance = form.save(commit=False)
+        # Присваевается автор
+        instance.author = request.user
+        # Сороняется.
+        instance.save()
         # ...вызовем функцию подсчёта дней:
         birthday_countdown = calculate_birthday_countdown(
             # ...и передаём в неё дату из словаря cleaned_data.
